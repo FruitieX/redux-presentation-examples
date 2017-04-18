@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import {
   CardContent,
@@ -14,6 +15,7 @@ import ResponsiveCard from '../components/ResponsiveCard';
 
 /* eslint-disable react/prefer-stateless-function */
 /* eslint-disable react/no-multi-comp */
+/* eslint-disable react/prop-types */
 class Button extends Component {
   render = () =>
     <MButton primary raised {...this.props}>
@@ -21,6 +23,7 @@ class Button extends Component {
     </MButton>
 }
 
+/* React example */
 class MyButton extends Component {
   state = { toggled: false }; // Initial state
 
@@ -35,6 +38,31 @@ class MyButton extends Component {
     </div>
 }
 
+/* Redux example */
+// Action type, action creator
+export const PRESS_BUTTON = 'PRESS_BUTTON';
+export const pressButton = () => ({ type: PRESS_BUTTON });
+
+const mapStateToProps = state => ({
+  toggled: state.button.toggled,
+});
+
+const mapDispatchToProps = dispatch => ({
+  doToggle: () => dispatch(pressButton()),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
+class MyButtonRedux extends Component {
+  render = () =>
+    <div>
+      <Button
+        onClick={this.props.doToggle}
+      />
+
+      <div>{ `Toggled: ${this.props.toggled}` }</div>
+    </div>
+}
+
 const Home = () => (
   <CardWrapper>
     <ResponsiveCard>
@@ -42,6 +70,13 @@ const Home = () => (
         <Text type="headline" component="h2">State handling in React</Text>
 
         <MyButton />
+      </CardContent>
+    </ResponsiveCard>
+    <ResponsiveCard>
+      <CardContent>
+        <Text type="headline" component="h2">State handling in Redux</Text>
+
+        <MyButtonRedux />
       </CardContent>
     </ResponsiveCard>
   </CardWrapper>
